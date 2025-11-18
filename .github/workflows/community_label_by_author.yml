@@ -37,8 +37,6 @@ jobs:
             // 3. Check if the author is in the list
             if (communityUsers.includes(prAuthor)) {
               console.log(`Author ${prAuthor} is a community user. Applying labels.`);
-              
-              labelsToAdd.push(data.label);
 
               // Apply labels using the GitHub API
               await github.rest.issues.addLabels({
