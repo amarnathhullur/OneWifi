@@ -34,7 +34,7 @@ jobs:
             // Define the labels to apply
             const labelsToAdd = ['community contribution'];
 
-            // 3. Check if the author is in the list
+            //Check if the author is in the list
             if (communityUsers.includes(prAuthor)) {
               console.log(`Author ${prAuthor} is a community user. Applying labels.`);
 
