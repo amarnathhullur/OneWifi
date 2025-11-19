@@ -1,25 +1,27 @@
-name: 'Label as Community PR by Defined Authors'
+name: 'Label as community contribution based on Defined Authors'
 
 on:
-  pull_request:
+  pull_request_target:
     types: [opened, reopened, synchronize]
 
 jobs:
   label_pr:
     runs-on: ubuntu-latest
     permissions:
-      contents: read     # Required to read the JSON file
-      pull-requests: write # Required to apply labels
+      contents: read        # Required to read the JSON file
+      pull-requests: write  # Required to apply labels to the PR
 
     steps:
       - name: Checkout Code
-        # This is mandatory to access the .github/internal_authors.json file
+        # This is mandatory to access the .github/community_authors.json file
         uses: actions/checkout@v4
 
       - name: Read Author List and Apply Labels
         uses: actions/github-script@v7
         id: labeler
         with:
+          # Use the repository's token to run in the context of the repository, not the PR author
+          token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const fs = require('fs');
             const path = require('path');
@@ -34,7 +36,7 @@ jobs:
             // Define the labels to apply
             const labelsToAdd = ['community contribution'];
 
-            // 3. Check if the author is in the list
+            //Check if the author is in the list
             if (communityUsers.includes(prAuthor)) {
               console.log(`Author ${prAuthor} is a community user. Applying labels.`);
 
@@ -45,7 +47,6 @@ jobs:
                 repo: context.repo.repo,
                 labels: labelsToAdd
               });
-              
             } else {
               console.log(`Author ${prAuthor} is not in the internal user list. Skipping.`);
             }
